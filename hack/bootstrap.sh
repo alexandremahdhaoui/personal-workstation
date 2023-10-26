@@ -72,6 +72,11 @@ EOF
 
 bashrc() {
   cat <<'EOF' | tee -a "${HOME}/.bashrc"
+
+  if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    exec tmux
+  fi
+
 export GOPATH="${HOME}/go"
 export GOBIN="${GOPATH}/bin"
 export PATH="${PATH}:${GOBIN}"
