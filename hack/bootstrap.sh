@@ -5,7 +5,6 @@ rpm_ostree_install() {
     1password     \
     1password-cli \
     arp-scan      \
-    golang        \
     libvirt       \
     qemu-kvm      \
     sysstat       \
@@ -13,6 +12,7 @@ rpm_ostree_install() {
     tmux          \
     virt-install  \
     virt-viewer
+#    golang        \
 }
 
 go_install() {
