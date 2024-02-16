@@ -15,6 +15,28 @@ rpm_ostree_install() {
     virt-viewer
 }
 
+go_install() {
+  CPU_FAMILY=$(arch)
+  if [ "${CPU_FAMILY}" == "x86_64" ]; then CPU_FAMILY="amd64";fi
+  if [ "${CPU_FAMILY}" == "aarch64" ]; then CPU_FAMILY="arm64";fi
+
+
+  printf "Checking latest Go version...\n";
+  LATEST_GO_VERSION="$(curl -sfL https://go.dev/VERSION?m=text | head -n 1)";
+  GO_URL="https://go.dev/dl/${LATEST_GO_VERSION}.linux-${CPU_FAMILY}.tar.gz"
+
+  printf "cd to home (%s) directory \n" "${USER}"
+  cd "${HOME}" || exit 1
+
+  printf "Downloading %s\n\n" "${GO_URL}";
+  curl -OJ -L --progress-bar "${GO_URL}"
+
+  printf "Extracting file...\n"
+  tar -xf "${LATEST_GO_VERSION}.linux-${GO_URL}.tar.gz"
+
+  go version
+}
+
 tmux_default_shell() {
   chsh -s /usr/bin/tmux
 }
@@ -85,6 +107,25 @@ export PATH="${PATH}:${GOBIN}"
 EOF
 }
 
+gitconfig() {
+  cat <<EOF | tee "${HOME}/.gitconfig"
+[user]
+        email = alexandre.mahdhaoui@gmail.com
+        name = Alexandre Mahdhaoui
+[core]
+        excludesfile = /var/home/alex/.gitignore
+[init]
+        defaultBranch = main
+[url "git@github.com:alexandremahdhaoui"]
+        insteadOf = https://github.com/alexandremahdhaoui
+EOF
+
+  cat <<EOF | tee -a "${HOME}/.gitignore"
+.idea
+nohup.out
+EOF
+}
+
 main() {
   export GOPATH="${HOME}/go"
   export GOBIN="${GOPATH}/bin"
@@ -95,6 +136,7 @@ main() {
   mkdir -p "${ALEX_DIR}"
 
   rpm_ostree_install
+  go_install
 
   tmux_default_shell
   tmux_conf
@@ -109,6 +151,7 @@ main() {
   vib_config
 
   bashrc
+  gitconfig
 }
 
 main
