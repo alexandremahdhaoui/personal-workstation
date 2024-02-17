@@ -6,18 +6,16 @@ go_install() {
   if [ "${CPU_FAMILY}" == "x86_64" ]; then CPU_FAMILY="amd64";fi
   if [ "${CPU_FAMILY}" == "aarch64" ]; then CPU_FAMILY="arm64";fi
 
-  printf "Checking latest Go version...\n";
   LATEST_GO_VERSION="$(curl -sfL https://go.dev/VERSION?m=text | head -n 1)";
   GO_DOWNLOAD_URL="https://go.dev/dl/${LATEST_GO_VERSION}.linux-${CPU_FAMILY}.tar.gz"
 
-  printf "cd to home (%s) directory \n" "${USER}"
   cd "${HOME}" || exit 1
 
-  printf "Downloading %s\n\n" "${GO_DOWNLOAD_URL}";
+  printf "Installing %s... " "${GO_DOWNLOAD_URL}";
   curl -sfL --progress-bar "${GO_DOWNLOAD_URL}" | tar -C "${GO_INSTALL_DEST}" -xz
 
   ln -sf "${GO_INSTALL_DEST}/go/bin/go" "${HOME}/.local/bin"
-  go version
+  if go version &>/dev/null; then printf "DONE ✅\n";fi
 }
 
 tmux_default_shell() {
@@ -43,6 +41,7 @@ ssh_add_identity() {
 
 github_upload_public_key() {
   xdg-open https://github.com/settings/keys &>/dev/null
+  printf "\n---\n"
   read -p "Please upload your ssh public key to github.com
 
 Opening https://github.com/settings/keys
@@ -58,7 +57,8 @@ clone_data_repo() {
   (
     cd "${DEST_DIR}" || { echo "Failed changing directory to \"${DEST_DIR}\"" && exit 1 ; }
     git clone git@github.com:alexandremahdhaoui/data.git || echo github.com:alexandremahdhaoui/data.git already cloned
-    git switch fcos
+    cd ./data || exit 1
+    git switch t480
   )
 }
 
@@ -104,7 +104,7 @@ gitconfig() {
         email = alexandre.mahdhaoui@gmail.com
         name = Alexandre Mahdhaoui
 [core]
-        excludesfile = /var/home/alex/.gitignore
+        excludesfile = ${HOME}/.gitignore
 [init]
         defaultBranch = main
 [url "git@github.com:alexandremahdhaoui"]

@@ -10,15 +10,15 @@ main() {
   export PATH="${PATH}:${GOBIN}"
   mkdir -p "${GOBIN}"
 
-  flatpack_add_flathub
+  flatpak_add_flathub
   install_google_chrome
   install_password_manager
   install_source_code_pro
   update_system_fonts
 
-  install_tools
+  install_workstation
 
-  ALEX_DIR="${GOPATH}/github.com/alexandremahdhaoui"
+  ALEX_DIR="${GOPATH}/src/github.com/alexandremahdhaoui"
   mkdir -p "${ALEX_DIR}"
 
   go_install
