@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2086
 source "$(dirname ${0})/common.sh"
+source "$(dirname "${0}")/misc.sh"
 
 main() {
   export GOPATH="${HOME}/go"
@@ -8,8 +10,16 @@ main() {
   export PATH="${PATH}:${GOBIN}"
   mkdir -p "${GOBIN}"
 
-  ALEXANDRE_MAHDHAOUI_DIR="${GOPATH}/github.com/alexandremahdhaoui"
-  mkdir -p "${ALEXANDRE_MAHDHAOUI_DIR}"
+  flatpack_add_flathub
+  install_google_chrome
+  install_password_manager
+  install_source_code_pro
+  update_system_fonts
+
+  install_tools
+
+  ALEX_DIR="${GOPATH}/github.com/alexandremahdhaoui"
+  mkdir -p "${ALEX_DIR}"
 
   go_install
 
@@ -20,10 +30,10 @@ main() {
   ssh_add_identity
   github_upload_public_key
 
-  clone_data_repo "${ALEXANDRE_MAHDHAOUI_DIR}"
+  clone_data_repo "${ALEX_DIR}"
 
   vib_install
-  vib_config
+  vib_config "${ALEX_DIR}"
 
   bashrc
   gitconfig

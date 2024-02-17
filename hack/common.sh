@@ -1,28 +1,29 @@
 #!/usr/bin/env bash
 
 go_install() {
+  GO_INSTALL_DEST="${HOME}/.local/share"
   CPU_FAMILY=$(arch)
   if [ "${CPU_FAMILY}" == "x86_64" ]; then CPU_FAMILY="amd64";fi
   if [ "${CPU_FAMILY}" == "aarch64" ]; then CPU_FAMILY="arm64";fi
 
   printf "Checking latest Go version...\n";
   LATEST_GO_VERSION="$(curl -sfL https://go.dev/VERSION?m=text | head -n 1)";
-  GO_URL="https://go.dev/dl/${LATEST_GO_VERSION}.linux-${CPU_FAMILY}.tar.gz"
+  GO_DOWNLOAD_URL="https://go.dev/dl/${LATEST_GO_VERSION}.linux-${CPU_FAMILY}.tar.gz"
 
   printf "cd to home (%s) directory \n" "${USER}"
   cd "${HOME}" || exit 1
 
-  printf "Downloading %s\n\n" "${GO_URL}";
-  curl -OJ -L --progress-bar "${GO_URL}"
+  printf "Downloading %s\n\n" "${GO_DOWNLOAD_URL}";
+  curl -sfL --progress-bar "${GO_DOWNLOAD_URL}" | tar -C "${GO_INSTALL_DEST}" -xz
 
-  printf "Extracting file...\n"
-  tar -xf "${LATEST_GO_VERSION}.linux-${CPU_FAMILY}.tar.gz"
-
+  ln -sf "${GO_INSTALL_DEST}/go/bin/go" "${HOME}/.local/bin"
   go version
 }
 
 tmux_default_shell() {
-  chsh -s /usr/bin/tmux
+  TMUX_BIN="${HOME}/.local/bin/tmux"
+  echo "${TMUX_BIN}" | sudo tee -a /etc/shells
+  chsh -s "${TMUX_BIN}"
 }
 
 tmux_conf() {
@@ -53,18 +54,22 @@ PRESS ENTER TO CONTINUE"
 
 clone_data_repo() {
   DEST_DIR="${1}"
+
   (
     cd "${DEST_DIR}" || { echo "Failed changing directory to \"${DEST_DIR}\"" && exit 1 ; }
-    git clone git@github.com:alexandremahdhaoui/data.git
+    git clone git@github.com:alexandremahdhaoui/data.git || echo github.com:alexandremahdhaoui/data.git already cloned
+    git switch fcos
   )
 }
 
 vib_install() {
-  go install github.com/alexandremahdhaoui/vib@latest
+  go install github.com/alexandremahdhaoui/vib/cmd/vib@latest
   vib render thiswillfail &>/dev/null
 }
 
 vib_config() {
+  DEST_DIR="${1}"
+
   cat <<EOF | tee "${HOME}/.config/vib/vib.alexandre.mahdhaoui.com_v1alpha1.config.config.yaml"
 apiVersion: vib.alexandre.mahdhaoui.com/v1alpha1
 kind: Config
@@ -72,16 +77,18 @@ metadata:
     name: config
 spec:
     operatorstrategy: filesystem
-    resourcedir: ${ALEX_DIR}/data/vib
+    resourcedir: ${DEST_DIR}/data/vib
 EOF
 }
 
 bashrc() {
   cat <<'EOF' | tee -a "${HOME}/.bashrc"
 
-  if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    exec tmux
-  fi
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  exec tmux
+fi
+
+export EDITOR=vi
 
 export GOPATH="${HOME}/go"
 export GOBIN="${GOPATH}/bin"
@@ -92,7 +99,6 @@ EOF
 }
 
 gitconfig() {
-  if stat "${HOME}/.gitconfig"; then return 0;fi
   cat <<EOF | tee "${HOME}/.gitconfig"
 [user]
         email = alexandre.mahdhaoui@gmail.com
