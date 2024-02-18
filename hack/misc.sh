@@ -25,6 +25,10 @@ update_system_fonts() {
   gsettings set org.gnome.desktop.interface font-name 'Source Code Pro'
 }
 
+update_keyboard() {
+  gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape,ctrl:swap_lalt_lctl']"
+}
+
 install_distrobox() {
   rpm-ostree install distrobox &>/dev/null || echo distrobox already installed on this machine
 }
