@@ -41,7 +41,7 @@ install_workstation() {
 image=fedora:39
 replace=true
 init_hooks="dnf install -y dnf-command\(copr\) && sudo dnf copr enable -y atim/starship && sudo dnf install -y starship"
-additional_packages="git tmux rust cargo"
+additional_packages="git tmux rust cargo make"
 exported_bins="/usr/bin/tmux"
 exported_bins_path="${HOME}/.local/bin"
 start_now=true

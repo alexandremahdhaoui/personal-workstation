@@ -15,6 +15,7 @@ main() {
   install_password_manager
   install_source_code_pro
   update_system_fonts
+  update_keyboard
 
   install_workstation
 
