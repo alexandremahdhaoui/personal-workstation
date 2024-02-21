@@ -9,6 +9,7 @@ main() {
   export GOBIN="${GOPATH}/bin"
   export PATH="${PATH}:${GOBIN}"
   mkdir -p "${GOBIN}"
+  mkdir -p "${HOME}/.local/bin"
 
   flatpak_add_flathub
   install_google_chrome
