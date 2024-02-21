@@ -64,3 +64,16 @@ EOF
   distrobox assemble create -R --file "${TEMP_FILE}" || exit 1
   printf "DONE ✅\n"
 }
+
+install_jetbrains_toolbox() {
+  printf "installing jetbrains-toolbox"
+  sudo dnf install -y fuse fuse-devel &>/dev/null
+  BINARY="jetbrains-toolbox"
+  VERSION="2.2.1.19765"
+  URL="https://download.jetbrains.com/toolbox/${BINARY}-${VERSION}.tar.gz?_ga=2.208160214.53603754.1708527082-621591399.1708527082"
+  curl -sfL "${URL}" | tar -xz
+  cp -f ./"${BINARY}-${VERSION}/${BINARY}" "${HOME}/.local/bin/"
+  rm -rf ./"${BINARY}-${VERSION}"
+  printf "DONE ✅\n"
+}
+
