@@ -54,9 +54,16 @@ install_workstation() {
 [workstation]
 image=fedora:39
 replace=true
+# --- STARSHIP
 init_hooks="sudo dnf install -y dnf-command\(copr\) && sudo dnf copr enable -y atim/starship && sudo dnf install -y starship"
+# --- DEVELOPMENT TOOLS
 init_hooks="sudo dnf group install -y "Development Tools""
-additional_packages="git tmux rust cargo"
+# --- KUBECTL
+init_hooks="curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl && chmod 755 kubectl && mv kubectl ${HOME}/.local/bin/kubectl"
+# --- CLUSTER API
+init_hooks="curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.6.1/clusterctl-linux-amd64 -o clusterctl && chmod 0755 clusterctl && mv clusterctl ${HOME}/.local/bin/clusterctl"
+# --- DNF packages
+additional_packages="git tmux rust cargo helm"
 exported_bins="/usr/bin/tmux"
 exported_bins_path="${HOME}/.local/bin"
 start_now=true
