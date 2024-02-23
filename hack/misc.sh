@@ -55,15 +55,24 @@ install_workstation() {
 image=fedora:39
 replace=true
 # --- STARSHIP
-init_hooks="sudo dnf install -y dnf-command\(copr\) && sudo dnf copr enable -y atim/starship && sudo dnf install -y starship"
+init_hooks="sudo dnf install -y dnf-command\(copr\)"
+init_hooks="sudo dnf copr enable -y atim/starship"
+init_hooks="sudo dnf install -y starship"
 # --- DEVELOPMENT TOOLS
 init_hooks="sudo dnf group install -y "Development Tools""
 # --- KUBECTL
-init_hooks="curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl && chmod 755 kubectl && mv kubectl ${HOME}/.local/bin/kubectl"
+init_hooks="curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+init_hooks="chmod 755 kubectl"
+init_hooks="mv kubectl ${HOME}/.local/bin/kubectl"
 # --- CLUSTER API
-init_hooks="curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.6.1/clusterctl-linux-amd64 -o clusterctl && chmod 0755 clusterctl && mv clusterctl ${HOME}/.local/bin/clusterctl"
+init_hooks="curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.6.1/clusterctl-linux-amd64 -o clusterctl"
+init_hooks="chmod 0755 clusterctl"
+init_hooks="mv clusterctl ${HOME}/.local/bin/clusterctl"
+# --- YQ
+init_hooks="wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O ${HOME}/.local/bin/yq"
+init_hooks="chmod +x ${HOME}/.local/bin/yq"  
 # --- DNF packages
-additional_packages="git tmux rust cargo helm"
+additional_packages="git tmux rust cargo helm jq"
 exported_bins="/usr/bin/tmux"
 exported_bins_path="${HOME}/.local/bin"
 start_now=true
