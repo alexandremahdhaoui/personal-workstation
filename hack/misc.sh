@@ -72,7 +72,8 @@ init_hooks="mv clusterctl ${HOME}/.local/bin/clusterctl"
 init_hooks="wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O ${HOME}/.local/bin/yq"
 init_hooks="chmod +x ${HOME}/.local/bin/yq"  
 # --- DNF packages
-additional_packages="git tmux rust cargo helm jq bind-utils"
+additional_packages="git tmux rust cargo helm jq bind-utils net-tools"
+# --- Exported Binaries
 exported_bins="/usr/bin/tmux"
 exported_bins_path="${HOME}/.local/bin"
 start_now=true
