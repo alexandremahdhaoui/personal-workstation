@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC2086
-source "$(dirname ${0})/common.sh"
-source "$(dirname "${0}")/misc.sh"
-
+source <(curl -sfL https://raw.githubusercontent.com/alexandremahdhaoui/personal-workstation/main/hack/common.sh)
+source <(curl -sfL https://raw.githubusercontent.com/alexandremahdhaoui/personal-workstation/main/hack/misc.sh)
+ 
 main() {
   export GOPATH="${HOME}/go"
   export GOBIN="${GOPATH}/bin"
