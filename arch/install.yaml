@@ -1,0 +1,10 @@
+# pacman -Syy
+update: true
+
+package:
+- neovim
+- networkmanager
+- iwd
+- lvm2
+- dosfstools
+
