@@ -6,7 +6,7 @@ wifi_setup() {
   iwctl station wlan0 scan
   iwctl station wlan0 get-networks
   echo "Please select a station: "
-  read STATION
+  read -r STATION
   iwctl station wlan0 connect "${STATION}" || wifi_setup
   echo "Successfully connected to wifi station ${STATION}"
 }
@@ -20,12 +20,12 @@ set_timezone() {
 disk_select() {
   sudo fdisk -l | grep 'Disk /dev/'
   echo "Please select a disk: "
-  read DISK
+  read -r DISK
 
   echo "Selected disk: '${DISK}'; CONFIRM (y/n): "
-  read CONFIRM
+  read -r CONFIRM
   if [[ "$CONFIRM" != "y" ]]; then disk_select; return;fi
-  printf "Successfully selected disk '${DISK}'"
+  echo "Successfully selected disk '${DISK}'"
 }
 
 ## Unsecurely erase disk
@@ -58,21 +58,22 @@ p
 q
 EOF
 
-  cat /tmp/fdisk.conf | fdisk "${DISK}"
+  fdisk "${DISK}" < /tmp/fdisk.conf
   echo "Do you want to continue with default fdisk configuration? (y/n)"
-  read CONFIRM
+  read -r CONFIRM
   if [[ "${CONFIRM}" != "y" ]]; then
     vim /tmp/fdisk.conf
   fi
 
-  cat /tmp/fdisk.conf | sed 's/q/w/' | fdisk "${DISK}" 
+  # shellcheck disable=SC2002
+  cat /tmp/fdisk.conf | sed 's/q/w/' | fdisk "${DISK}"
 }
 
 # Encrypt root part
 encrypt_root_part() {
   ROOTPART="${DISK}p3"
   cryptsetup -y -v luksFormat "${ROOTPART}"
-  cryptsetup open ${ROOTPART} root
+  cryptsetup open "${ROOTPART}" root
   mkfs.ext4 /dev/mapper/root
   mount /dev/mapper/root /mnt
 }
@@ -115,7 +116,7 @@ hwclock --systohc
 EOF
 
   echo "Please enter your hostname: "
-  read NEW_HOSTNAME
+  read -r NEW_HOSTNAME
   cat <<EOF | arch-chroot /mnt
 echo "${NEW_HOSTNAME}" | tee /etc/hostname
 echo "en_US.UTF-8 UTF-8" | tee -a /etc/locale.gen
@@ -128,19 +129,20 @@ EOF
 
 setup_user() {
   echo "Please enter name for your user:"
-  read NEW_USER
+  read -r NEW_USER
   echo "Confirm username '${NEW_USER}' (y/n): "
-  read CONFIRM
+  read -r  CONFIRM
   if [[ "$CONFIRM" != "y" ]]; then setup_user; return;fi
   arch-chroot /mnt useradd -m -G wheel -s /usr/bin/bash "${NEW_USER}"
 }
 
 set_user_passwd() {
   echo "You will set the password for '${NEW_USER}'. Press ENTER when ready."
-  read YOLO
-  arch-chroot /mnt passwd ${NEW_USER}
+  # shellcheck disable=SC2034
+  read -r YOLO
+  arch-chroot /mnt passwd "${NEW_USER}"
   echo "Confirm new password (y/n): "
-  read CONFIRM
+  read -r CONFIRM
   if [[ "$CONFIRM" != "y" ]]; then set_user_passwd; return;fi
 }
 
@@ -148,9 +150,15 @@ setup_bootloader() {
   arch-chroot /mnt bootctl install
 }
 
+setup_gnome() {
+  arch-chroot /mnt pacman -Syu
+  arch-chroot /mnt pacman -S gnome gnome-tweaks gnome-shell-extensions
+  arch-chroot /mnt systemctl enable gdm
+}
+
 lets_reboot() {
   echo "Are you ready to reboot? (y/n) "
-  read CONFIRM
+  read -r CONFIRM
   if [[ "$CONFIRM" != "y" ]]; then echo "Please run 'lets_reboot' when ready to umount and reboot your machine."; return;fi
  
   umount -R /mnt
@@ -174,5 +182,6 @@ setup_root
 setup_user
 set_user_passwd
 setup_bootloader
+setup_gnome
 
 lets_reboot

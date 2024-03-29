@@ -3,24 +3,66 @@ pacman:
   - flatpak
   - starship
   - kubectl
-  - clusterctl
   - rust
   - cargo
   - helm
   - jq
   - bind
   - net-tools
+  - go
+  - go-tools
+  - delve
 
 flatpak:
   remote:
     flathub: https://dl.flathub.org/repo/flathub.flatpakrepo
   flathub:
     - com.google.Chrome
+  ref:
     - https://downloads.1password.com/linux/flatpak/1Password.flatpakref
 
-otherConfig:
-  - gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape,ctrl:swap_lalt_lctl']"
-  - gsettings set org.gnome.desktop.interface document-font-name  'Source Code Pro'
-  - gsettings set org.gnome.desktop.interface font-name 'Source Code Pro'
-  - gsettings set default-web-browser com.gooogle.Chrome.desktop
+gsettings:
+  - set org.gnome.desktop.input-sources xkb-options "['caps:escape,ctrl:swap_lalt_lctl']"
+  - set org.gnome.desktop.interface document-font-name  'Source Code Pro'
+  - set org.gnome.desktop.interface font-name 'Source Code Pro'
+  - set default-web-browser com.gooogle.Chrome.desktop
+
+files:
+  home:
+    .config/vib/vib.alexandre.mahdhaoui.com_v1alpha1.config.config.yaml: |
+      apiVersion: vib.alexandre.mahdhaoui.com/v1alpha1
+      kind: Config
+      metadata:
+        name: config
+      spec:
+        operatorstrategy: filesystem
+        resourcedir: ${HOME}/go/src/github.com/alexandremahdhaoui/data/vib
+
+    .config/.tmux.conf: |
+      set-option -g default-shell /usr/bin/bash
+
+    .bashrc: |
+      if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+        exec tmux
+      fi
+      export EDITOR=vi
+      export GOPATH="${HOME}/go"
+      export GOBIN="${GOPATH}/bin"
+      export PATH="${PATH}:${GOBIN}"
+      . <(vib render profile t480-arch)
+
+    .gitconfig: |
+      [user]
+        email = alexandre.mahdhaoui@gmail.com
+        name = Alexandre Mahdhaoui
+      [core]
+        excludesfile = ${HOME}/.gitignore
+      [init]
+        defaultBranch = main
+      [url "git@github.com:alexandremahdhaoui"]
+        insteadOf = https://github.com/alexandremahdhaoui
+
+    .gitignore: |
+      .idea
+      nohup.out
 
