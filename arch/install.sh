@@ -104,13 +104,13 @@ run_genfstab() {
 }
 
 setup_root() {
+  arch-chroot /mnt pacman -Syu
   echo "Please add [ 'systemd', 'keyboard', 'sd-vconsole', 'sd-encrypt' ] to /etc/mkinitcpio.conf"
   echo "Example: HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)"
   printf "Press ENTER wehn ready to edit the file..."
   read YOLO
   arch-chroot /mnt vim /etc/mkinitcpio.conf
   cat <<EOF | arch-chroot /mnt
-echo "rd.luks.name=$(blkid | grep "${ROOTPART}" | sed 's/^.*UUID"//;s/".*//')" | tee /boot/loader/entries/arch.conf
 ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 hwclock --systohc
 EOF
@@ -147,11 +147,19 @@ set_user_passwd() {
 }
 
 setup_bootloader() {
+  ROOT_UUID=$(blkid | grep "${ROOTPART}" | sed 's/^.*UUID"//;s/".*//')
   arch-chroot /mnt bootctl install
+  cat <<EOF | arch-chroot /mnt
+echo -e "default arch" | tee /boot/loader/loader.conf
+echo "title   Arch Linux" | tee /boot/loader/entries/arch.conf
+echo "linux   /vmlinuz-linux" | tee -a /boot/loader/entries/arch.conf
+echo "initrd  /initramfs-linux.img" | tee -a /boot/loader/entries/arch.conf
+#echo "options root=UUID=${ROOT_UUID} rw" | tee -a /boot/loader/entries/arch.conf
+echo "rd.luks.name=${ROOT_UUID}=root root=/dev/mapper/root" | tee -a /boot/loader/entries/arch.conf
+EOF
 }
 
 setup_gnome() {
-  arch-chroot /mnt pacman -Syu
   arch-chroot /mnt pacman -S gnome gnome-tweaks gnome-shell-extensions
   arch-chroot /mnt systemctl enable gdm
 }
