@@ -93,7 +93,7 @@ setup_swap() {
 
 # run_pacstrap
 run_pacstrap() {
-  pacstrap -K /mnt base linux linux-firmware base-devel man-db man-pages texinfo networkmanager iwd bash tmux vim intel-ucode git
+  pacstrap -K /mnt base linux linux-firmware base-devel man-db man-pages texinfo networkmanager iwd bash tmux vim intel-ucode git yq
   # removed lvm2
 }
 

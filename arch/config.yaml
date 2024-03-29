@@ -1,0 +1,26 @@
+pacman:
+  - adobe-source-code-pro-fonts
+  - flatpak
+  - starship
+  - kubectl
+  - clusterctl
+  - rust
+  - cargo
+  - helm
+  - jq
+  - bind
+  - net-tools
+
+flatpak:
+  remote:
+    flathub: https://dl.flathub.org/repo/flathub.flatpakrepo
+  flathub:
+    - com.google.Chrome
+    - https://downloads.1password.com/linux/flatpak/1Password.flatpakref
+
+otherConfig:
+  - gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape,ctrl:swap_lalt_lctl']"
+  - gsettings set org.gnome.desktop.interface document-font-name  'Source Code Pro'
+  - gsettings set org.gnome.desktop.interface font-name 'Source Code Pro'
+  - gsettings set default-web-browser com.gooogle.Chrome.desktop
+
