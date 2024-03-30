@@ -148,8 +148,8 @@ set_user_passwd() {
 
 setup_bootloader() {
   ROOT_UUID=$(blkid | grep --color=none "${ROOTPART}" | sed 's/.*\ UUID="\([^"]*\)".*/\1/')
-  arch-chroot bootctl install
-  arch-chroot bootctl update
+  arch-chroot /mnt bootctl install
+  arch-chroot /mnt bootctl update
   cat <<EOF | arch-chroot /mnt
 echo -e "default arch.conf" | tee /boot/loader/loader.conf
 echo "title   Arch Linux" | tee /boot/loader/entries/arch.conf

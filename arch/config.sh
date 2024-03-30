@@ -16,15 +16,16 @@ run_flatpak() {
   
   # install from remotes
   for remote in $(yq '.flatpak.remote | keys | .[]' "${CONFIG_PATH}"); do
-    yq ".flatpak.${remote}[]" "${CONFIG_PATH}" |  xargs -I{} sudo flatpak install "${remote}" "{}"
+    yq ".flatpak.${remote}[]" "${CONFIG_PATH}" |  xargs -I{} sudo flatpak install -y "${remote}" {}
   done
   
   # install flatpaks from flatpakref
-  yq '.flatpak.ref[]' "${CONFIG_PATH}" | xargs sudo flatpak install -y "{}"
+  yq '.flatpak.ref[]' "${CONFIG_PATH}" | xargs sudo flatpak install -y
 }
 
 run_gsettings() {
-  yq '.gsettings[]' "${CONFIG_PATH}" | xargs -I{} gsettings "{}"
+  # shellcheck disable=SC2016
+  yq '.gsettings[]' "${CONFIG_PATH}" | xargs bash -c 'gsettings $0'
 }
 
 run_files() {
