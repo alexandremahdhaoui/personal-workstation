@@ -12,7 +12,7 @@ set_timezone() {
 # PARTITION DISK
 ## Select DISK
 disk_select() {
-  sudo fdisk -l | grep 'Disk /dev/'
+  sudo fdisk -l | grep --color=none 'Disk /dev/'
   echo "Please select a disk: "
   read -r DISK
 
@@ -24,12 +24,13 @@ disk_select() {
 
 ## Unsecurely erase disk
 disk_unsecure_erase() {
-  dd if=/dev/zero of="${DISK}" bs=512 sectors=128
+  dd if=/dev/zero of="${DISK}" bs=512 count=512
 }
 
 ## Create /boot 1G & root partition
 disk_partition() {
   cat <<EOF | tee /tmp/fdisk.conf
+g
 n
 1
 
@@ -88,7 +89,7 @@ setup_swap() {
 
 # run_pacstrap
 run_pacstrap() {
-  pacstrap -K /mnt base linux linux-firmware base-devel man-db man-pages texinfo networkmanager iwd bash tmux vim intel-ucode git yq
+  pacstrap -K /mnt base linux linux-firmware base-devel man-db man-pages texinfo networkmanager bash tmux vim intel-ucode git go-yq
 }
 
 # setup_fstab
@@ -100,6 +101,7 @@ setup_root() {
   arch-chroot /mnt pacman -Syu
   echo "Please add [ 'systemd', 'keyboard', 'sd-vconsole', 'sd-encrypt' ] to /etc/mkinitcpio.conf"
   echo "Example: HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt filesystems fsck)"
+  echo "PLEASE ALSO ADD 'MODULES=(vmd)' if you're using nvme on intel CPU"
   printf "Press ENTER wehn ready to edit the file..."
   read YOLO
   arch-chroot /mnt vim /etc/mkinitcpio.conf
@@ -126,7 +128,9 @@ setup_user() {
   echo "Confirm username '${NEW_USER}' (y/n): "
   read -r  CONFIRM
   if [[ "$CONFIRM" != "y" ]]; then setup_user; return;fi
-  arch-chroot /mnt useradd -m -G wheel -s /usr/bin/bash "${NEW_USER}"
+  cat <<EOF | arch-chroot /mnt
+useradd -m -G wheel -s /usr/bin/bash "${NEW_USER}"
+echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
 }
 
 set_user_passwd() {
@@ -140,15 +144,14 @@ set_user_passwd() {
 }
 
 setup_bootloader() {
-  ROOT_UUID=$(blkid | grep "${ROOTPART}" | sed 's/^.*UUID"//;s/".*//')
+  ROOT_UUID=$(blkid | grep --color=none "${ROOTPART}" | sed 's/.*\ UUID="\([^"]*\)".*/\1/')
   arch-chroot /mnt bootctl install
   cat <<EOF | arch-chroot /mnt
-echo -e "default arch" | tee /boot/loader/loader.conf
+echo -e "default arch.conf" | tee /boot/loader/loader.conf
 echo "title   Arch Linux" | tee /boot/loader/entries/arch.conf
 echo "linux   /vmlinuz-linux" | tee -a /boot/loader/entries/arch.conf
 echo "initrd  /initramfs-linux.img" | tee -a /boot/loader/entries/arch.conf
-#echo "options root=UUID=${ROOT_UUID} rw" | tee -a /boot/loader/entries/arch.conf
-echo "rd.luks.name=${ROOT_UUID}=root root=/dev/mapper/root" | tee -a /boot/loader/entries/arch.conf
+echo "options rd.luks.name=${ROOT_UUID}=root root=/dev/mapper/root rw" | tee -a /boot/loader/entries/arch.conf
 EOF
 }
 

@@ -1,35 +1,37 @@
 #!/usr/bin/env bash
 
+CONFIG_PATH="${HOME}/.config.yaml"
+
 cache_config() {
-  curl -sfL https://raw.githubusercontent.com/alexandremahdhaoui/personal-workstation/main/arch/config.yaml | tee /tmp/arch_config.yaml
+  curl -sfL https://raw.githubusercontent.com/alexandremahdhaoui/personal-workstation/main/arch/config.yaml | tee "${CONFIG_PATH}"
 }
 
 run_pacman() {
-  yq '.pacman[]' /tmp/arch_config.yaml | xargs pacman -S --noconfirm
+  yq '.pacman[]' "${CONFIG_PATH}" | xargs sudo pacman -S --noconfirm
 }
 
 run_flatpak() {
   # install remotes
-  yq '.flatpak.remote' /tmp/arch_config.yaml | sed "s/\://" | xargs -I{} flatpak remote-add --if-not-exists "{}"
+  yq '.flatpak.remote' "${CONFIG_PATH}" | sed "s/\://" | xargs -n 2 flatpak remote-add --if-not-exists
   
   # install from remotes
-  for remote in $(yq '.flatpak.remote | keys | .[]' /tmp/arch_config.yaml); do
-    yq ".flatpak.${remote}[]" |  xargs -I{} echo flatpak install "${remote}" "{}"
+  for remote in $(yq '.flatpak.remote | keys | .[]' "${CONFIG_PATH}"); do
+    yq ".flatpak.${remote}[]" "${CONFIG_PATH}" |  xargs -I{} sudo flatpak install "${remote}" "{}"
   done
   
   # install flatpaks from flatpakref
-  yq '.flatpak.ref[]' /tmp/arch_config.yaml | xargs -I{} flatpak install -y "{}"
+  yq '.flatpak.ref[]' "${CONFIG_PATH}" | xargs sudo flatpak install -y "{}"
 }
 
 run_gsettings() {
-  yq '.gsettings[]' /tmp/arch_config.yaml | xargs -I{} echo gsettings "{}"
+  yq '.gsettings[]' "${CONFIG_PATH}" | xargs -I{} gsettings "{}"
 }
 
 run_files() {
-  yq '.files.home | keys | .[]' /tmp/arch_config.yaml | xargs dirname | xargs -I{} echo "${HOME}/{}" |  xargs mkdir -p
+  yq '.files.home | keys | .[]' "${CONFIG_PATH}" | xargs dirname | xargs -I{} echo "${HOME}/{}" |  xargs mkdir -p
 
-  for configpath in $(yq '.files.home | keys | .[]' /tmp/arch_config.yaml); do
-    yq ".files.home.\"${configpath}\"" | tee "${HOME}/${configpath}"
+  for filePath in $(yq '.files.home | keys | .[]' "${CONFIG_PATH}"); do
+    yq ".files.home.\"${filePath}\"" "${CONFIG_PATH}" | tee "${HOME}/${filePath}"
   done
 }
 
@@ -38,4 +40,3 @@ run_pacman
 run_flatpak
 run_gsettings
 run_files
-

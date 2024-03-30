@@ -1,12 +1,14 @@
 pacman:
-  - adobe-source-code-pro-fonts
+  - nerd-fonts
   - flatpak
+  - tmux
   - starship
   - kubectl
   - rust
   - cargo
   - helm
   - jq
+  - go-yq
   - bind
   - net-tools
   - go
@@ -25,7 +27,7 @@ gsettings:
   - set org.gnome.desktop.input-sources xkb-options "['caps:escape,ctrl:swap_lalt_lctl']"
   - set org.gnome.desktop.interface document-font-name  'Source Code Pro'
   - set org.gnome.desktop.interface font-name 'Source Code Pro'
-  - set default-web-browser com.gooogle.Chrome.desktop
+  - set default-web-browser com.google.Chrome.desktop
 
 files:
   home:
@@ -36,7 +38,7 @@ files:
         name: config
       spec:
         operatorstrategy: filesystem
-        resourcedir: ${HOME}/go/src/github.com/alexandremahdhaoui/data/vib
+        resourcedir: /home/alexandremahdhaoui/go/src/github.com/alexandremahdhaoui/data/vib
 
     .config/.tmux.conf: |
       set-option -g default-shell /usr/bin/bash
@@ -49,14 +51,14 @@ files:
       export GOPATH="${HOME}/go"
       export GOBIN="${GOPATH}/bin"
       export PATH="${PATH}:${GOBIN}"
-      . <(vib render profile t480-arch)
+      . <(vib render profile fcos)
 
     .gitconfig: |
       [user]
         email = alexandre.mahdhaoui@gmail.com
         name = Alexandre Mahdhaoui
       [core]
-        excludesfile = ${HOME}/.gitignore
+        excludesfile = /home/alexandremahdhaoui/.gitignore
       [init]
         defaultBranch = main
       [url "git@github.com:alexandremahdhaoui"]
@@ -65,4 +67,3 @@ files:
     .gitignore: |
       .idea
       nohup.out
-
