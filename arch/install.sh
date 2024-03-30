@@ -164,6 +164,16 @@ setup_gnome() {
   arch-chroot /mnt systemctl enable gdm
 }
 
+setup_yay()  {
+  arch-chroot /mnt git clone https://aur.archlinux.org/yay.git /tmp/yay
+  arch-chroot /mnt chown -R "${NEW_USER}:${NEW_USER}" /tmp/yay
+  arch-chroot /mnt sudo -u "${NEW_USER}" bash -c "cd /tmp/yay && makepkg -si --noconfirm"
+}
+
+install_chrome() {
+  arch-chroot /mnt yay -S google-chrome
+}
+
 lets_reboot() {
   echo "Are you ready to reboot? (y/n) "
   read -r CONFIRM
@@ -214,6 +224,12 @@ setup_bootloader
 _press_enter
 
 setup_gnome
+_press_enter
+
+setup_yay
+_press_enter
+
+install_chrome
 _press_enter
 
 lets_reboot
