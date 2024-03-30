@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 
-# WIFI
-wifi_setup() {
-  echo "Setting up wifi"
-  iwctl station wlan0 scan
-  iwctl station wlan0 get-networks
-  echo "Please select a station: "
-  read -r STATION
-  iwctl station wlan0 connect "${STATION}" || wifi_setup
-  echo "Successfully connected to wifi station ${STATION}"
+_press_enter() {
+  echo "Press ENTER to continue..."
+  read -r YOLO
 }
 
 set_timezone() {
@@ -95,7 +89,6 @@ setup_swap() {
 # run_pacstrap
 run_pacstrap() {
   pacstrap -K /mnt base linux linux-firmware base-devel man-db man-pages texinfo networkmanager iwd bash tmux vim intel-ucode git yq
-  # removed lvm2
 }
 
 # setup_fstab
@@ -173,23 +166,47 @@ lets_reboot() {
   reboot
 }
 
-echo "TODO: remove wifi_setup from this file and add it to the README.md"
 set_timezone
+_press_enter
+
 disk_select
+_press_enter
+
 disk_unsecure_erase
+_press_enter
+
 disk_partition
+_press_enter
+
 encrypt_root_part
+_press_enter
+
 setup_boot_part
+_press_enter
+
 setup_swap
+_press_enter
 
 echo "TODO: Update mirrorlist"
 run_pacstrap
+_press_enter
+
 run_genfstab
+_press_enter
 
 setup_root
+_press_enter
+
 setup_user
+_press_enter
+
 set_user_passwd
+_press_enter
+
 setup_bootloader
+_press_enter
+
 setup_gnome
+_press_enter
 
 lets_reboot
