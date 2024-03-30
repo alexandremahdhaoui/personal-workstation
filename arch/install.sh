@@ -108,6 +108,7 @@ setup_root() {
   cat <<EOF | arch-chroot /mnt
 ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 hwclock --systohc
+touch /etc/vconsole.conf
 EOF
 
   echo "Please enter your hostname: "
@@ -117,6 +118,7 @@ echo "${NEW_HOSTNAME}" | tee /etc/hostname
 echo "en_US.UTF-8 UTF-8" | tee -a /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" | tee /etc/locale.conf
+systemctl enable NetworkManager
 EOF
 
   arch-chroot /mnt mkinitcpio -P
@@ -131,6 +133,7 @@ setup_user() {
   cat <<EOF | arch-chroot /mnt
 useradd -m -G wheel -s /usr/bin/bash "${NEW_USER}"
 echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
+EOF
 }
 
 set_user_passwd() {
@@ -145,7 +148,8 @@ set_user_passwd() {
 
 setup_bootloader() {
   ROOT_UUID=$(blkid | grep --color=none "${ROOTPART}" | sed 's/.*\ UUID="\([^"]*\)".*/\1/')
-  arch-chroot /mnt bootctl install
+  arch-chroot bootctl install
+  arch-chroot bootctl update
   cat <<EOF | arch-chroot /mnt
 echo -e "default arch.conf" | tee /boot/loader/loader.conf
 echo "title   Arch Linux" | tee /boot/loader/entries/arch.conf
