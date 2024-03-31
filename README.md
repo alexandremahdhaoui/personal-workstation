@@ -6,7 +6,11 @@ Please run the following script to bootstrap a Personal Workstation:
 
 ### Install Arch Linux
 
-This script will install Arch Linux on your system. You'll need to flash the Arch Linux ISO on a USB key and boot on it.
+This script will install Arch Linux on your system. It will use standard partitioning to create a 1G EFI part, an 8GB
+swap, and use the remaining space as your root directory. This root partition is fully encrypted using `dm-crypt` and
+`luks`.
+
+First, you'll need to flash the Arch Linux ISO on a USB key and boot it.
 Then just run the following command:
 
 ```shell
