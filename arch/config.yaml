@@ -25,9 +25,9 @@ flatpak:
 
 gsettings:
   - set org.gnome.desktop.input-sources xkb-options "['caps:escape,ctrl:swap_lalt_lctl']"
-  - set org.gnome.desktop.interface           font-name 'Source Code Pro'
+  - set org.gnome.desktop.interface           font-name 'Source Code Pro 11'
   - set org.gnome.desktop.interface monospace-font-name 'Source Code Pro'
-  # - set org.gnome.desktop.interface  document-font-name 'Source Code Pro'
+  - set org.gnome.desktop.interface  document-font-name 'Source Code Pro'
   - set default-web-browser com.google.Chrome.desktop
 
 files:
