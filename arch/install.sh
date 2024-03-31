@@ -164,14 +164,10 @@ setup_gnome() {
   arch-chroot /mnt systemctl enable gdm
 }
 
-setup_yay()  {
-  arch-chroot /mnt git clone https://aur.archlinux.org/yay.git /tmp/yay
-  arch-chroot /mnt chown -R "${NEW_USER}:${NEW_USER}" /tmp/yay
-  arch-chroot /mnt sudo -u "${NEW_USER}" bash -c "cd /tmp/yay && makepkg -si --noconfirm"
-}
-
-install_chrome() {
-  arch-chroot /mnt yay -S google-chrome
+config() {
+  curl -sfL https://raw.githubusercontent.com/alexandremahdhaoui/personal-workstation/main/arch/config.sh | tee config.sh
+  chmod 755 config.sh
+  ./config.sh
 }
 
 lets_reboot() {
@@ -226,10 +222,7 @@ _press_enter
 setup_gnome
 _press_enter
 
-setup_yay
-_press_enter
-
-install_chrome
+config
 _press_enter
 
 lets_reboot

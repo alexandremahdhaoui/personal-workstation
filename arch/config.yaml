@@ -14,6 +14,7 @@ pacman:
   - go
   - go-tools
   - delve
+  - fuse2
 
 flatpak:
   remote:
@@ -51,8 +52,8 @@ files:
       export EDITOR=vi
       export GOPATH="${HOME}/go"
       export GOBIN="${GOPATH}/bin"
-      export PATH="${PATH}:${GOBIN}"
-      . <(vib render profile fcos)
+      export PATH="${PATH}:${GOBIN}:${HOME}/.local/bin"
+      . <(vib render profile linux)
 
     .gitconfig: |
       [user]
