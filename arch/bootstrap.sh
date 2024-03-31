@@ -30,7 +30,7 @@ PRESS ENTER TO CONTINUE"
 clone_data_repo() {
   read -rp "Please enter your github user: (e.g. 'alexandremahdhaoui') " github_user
   read -rp "Please enter the name of your data repository: (e.g. 'data') " data_repo
-  read -rp "Please enter the branch you want to switch to: (e.g. 'arch-t480') " data_branch
+  read -rp "Please enter the branch you want to switch to: (e.g. 'main') " data_branch
 
   DEST_DIR="${GOPATH}/src/github.com/${github_user}/${data_repo}"
   REPO_ADDR="git@github.com:${github_user}/${data_repo}.git"
