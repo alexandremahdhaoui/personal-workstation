@@ -44,13 +44,20 @@ clone_data_repo() {
   )
 }
 
-vib_install() {
+install_vib() {
   go install github.com/alexandremahdhaoui/vib/cmd/vib@latest
   vib render thiswillfail &>/dev/null # this install vib config.
+}
+
+install_lvim() {
+  bash <(LV_BRANCH='release-1.3/neovim-0.9' curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh)
+  # The command below installs all required plugins for GO:
+  "${HOME}/.local/bin/lvim" -c 'MasonInstall gopls golangci-lint-langserver delve goimports gofumpt gomodifytags gotests impl'
 }
 
 ssh_generate_keys
 ssh_add_identity
 github_upload_public_key
 clone_data_repo
-vib_install
+install_vib
+
