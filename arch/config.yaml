@@ -15,10 +15,12 @@ pacman:
   - go
   - go-tools
   - delve
-  - fuse2
+  - fuse3
   - ripgrep
   - neovim
   - shellcheck
+  - skopeo
+  - fuse-overlayfs
 
 flatpak:
   remote:
