@@ -56,7 +56,8 @@ install_lvim() {
 }
 
 install_tmux_tpm() {
-  git clone https://github.com/tmux-plugins/tpm "${GOPATH}/src/github.com/tmux-plugins/tpm"
+  mkdir -p "${HOME}/.tmux/plugins"
+  git clone https://github.com/tmux-plugins/tpm "${HOME}/.tmux/plugins/tpm"
 }
 
 ssh_generate_keys
