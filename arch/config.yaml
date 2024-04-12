@@ -81,7 +81,16 @@ files:
       bind k select-pane -U
       bind l select-pane -R
       bind \\ select-pane -l
-      
+
+      # --- tmux plugins
+      set -g @plugin 'tmux-plugins/tpm'
+      set -g @plugin 'tmux-plugins/tmux-sensible'
+      set -g @plugin 'tmux-plugins/tmux-resurrect'
+      set -g @plugin 'tmux-plugins/tmux-continuum'
+      set -g @continuum-restore 'on'
+
+      # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+      run '~/go/src/github.com/tmux-plugins/tpm/tpm
 
     .bashrc: |
       if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then

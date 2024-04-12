@@ -55,9 +55,15 @@ install_lvim() {
   "${HOME}/.local/bin/lvim" -c 'MasonInstall gopls golangci-lint-langserver delve goimports gofumpt gomodifytags gotests impl'
 }
 
+install_tmux_tpm() {
+  git clone https://github.com/tmux-plugins/tpm "${GOPATH}/src/github.com/tmux-plugins/tpm"
+}
+
 ssh_generate_keys
 ssh_add_identity
 github_upload_public_key
 clone_data_repo
 install_vib
+install_lvim
+install_tmux_tpm
 
