@@ -9,6 +9,7 @@ pacman:
   - helm
   - jq
   - go-yq
+  - wl-clipboard
   - bind
   - net-tools
   - inetutils
@@ -22,8 +23,14 @@ pacman:
   - skopeo
   - umoci
   - fuse-overlayfs
-  - ltrace
-  - wl-clipboard
+  - runc
+  - podman
+  - qemu-base
+  - dive # container image inspect
+  - dosfstools
+  - ovmf
+  - clang
+  - lld
 
 flatpak:
   remote:
@@ -80,7 +87,9 @@ files:
       bind j select-pane -D
       bind k select-pane -U
       bind l select-pane -R
-      bind \\ select-pane -l
+
+      # --- tmux QoL bindings
+      bind m set -gF mouse "#{?mouse,off,on}" \; display-message "#{?mouse,Mouse: ON, Mouse: OFF}"
 
       # --- tmux plugins
       set -g @plugin 'tmux-plugins/tpm'
