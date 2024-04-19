@@ -31,6 +31,7 @@ pacman:
   - ovmf
   - clang
   - lld
+  - dracut
 
 flatpak:
   remote:
