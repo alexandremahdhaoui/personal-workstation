@@ -143,6 +143,8 @@ files:
       vim.opt.showmatch = true
       vim.opt.mouse = ""
 
+      lvim.transparent_window = true
+
       ------------------------
       -- Treesitter
       ------------------------
