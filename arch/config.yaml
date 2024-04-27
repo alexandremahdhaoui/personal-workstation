@@ -32,6 +32,7 @@ pacman:
   - clang
   - lld
   - dracut
+  - nerdctl # installs containerd
 
 flatpak:
   remote:
@@ -106,6 +107,9 @@ files:
       if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
         exec tmux
       fi
+
+      tmux source ~/.config/.tmux.conf
+
       export EDITOR=vi
       export GOPATH="${HOME}/go"
       export GOBIN="${GOPATH}/bin"
