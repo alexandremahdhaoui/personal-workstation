@@ -33,6 +33,8 @@ pacman:
   - lld
   - dracut
   - nerdctl # installs containerd
+  - buildkit
+  - cni-plugins
 
 flatpak:
   remote:
