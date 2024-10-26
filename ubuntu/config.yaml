@@ -1,0 +1,14 @@
+packages:
+  - curl
+  - xclip
+  - git
+  - tmux
+  - golang-go
+  - gnome-tweak-tool
+  - make
+  - tree
+  - ripgrep
+  - nodejs
+  - npm
+  - luarocks
+  - 1password
