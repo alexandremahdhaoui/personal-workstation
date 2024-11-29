@@ -12,3 +12,4 @@ packages:
   - npm
   - luarocks
   - 1password
+  - python3
