@@ -4,6 +4,12 @@ GOPATH="${HOME}/go"
 GOBIN="${GOPATH}/bin"
 mkdir -p "${GOBIN}"
 
+install_packages() {
+  echo "Installing packages..."
+  OS_ID="$(sed -n 's/^ID=\(\w\)/\1/p' /etc/os-release)"
+  "$(git rev-parse --showtop-level)/${OS_ID}/packages.sh"
+}
+
 ssh_generate_keys() {
   echo "Generating ssh keys..."
   read -rp "Please enter your email: " email
@@ -62,6 +68,15 @@ install_chezmoi() {
   sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "${HOME}/.local/bin" init --apply git@github.com:alexandremahdhaoui/personal-dotfiles.git
 }
 
+install_gopackages() {
+  go install github.com/nametake/golangci-lint-langserver@06bb2d79c545dc3beabbe9327843897cbe8eb43a
+  go install github.com/mikefarah/yq/v4@v4.44.5
+  go install mvdan.cc/gofumpt@v0.7.0
+  go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+  go install github.com/segmentio/golines@latest
+}
+
+install_packages
 ssh_generate_keys
 ssh_add_identity
 github_upload_public_key
@@ -70,3 +85,4 @@ install_vib
 install_nvim
 install_tmux_tpm
 install_chezmoi
+install_gopackages
