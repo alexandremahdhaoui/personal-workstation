@@ -18,16 +18,18 @@
 
 # install packages
 sudo apt-get update
+sudo apt-get upgrade -y
 sudo apt-get install -y \
   1password \
   curl \
   git gnome-tweaks golang-go \
+  isc-dhcp-client \
   luarocks \
   make \
   nodejs npm \
   python3 \
   ripgrep \
-  tmux tree \
+  tcpdump tmux tree \
   xclip
 
 # python deps
