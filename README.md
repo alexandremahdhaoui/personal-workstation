@@ -2,6 +2,18 @@
 
 Please run the following script to bootstrap a Personal Workstation:
 
+## Ubuntu
+
+```shell
+sudo apt-get install -y curl git
+CLONE_DIR="${HOME}/go/src/github.com/alexandremahdhaoui"
+mkdir -p "${CLONE_DIR}"
+cd "${CLONE_DIR}"
+git clone https://github.com/alexandremahdhaoui/personal-workstation.git
+cd personal-workstation
+./common/bootstrap.sh
+```
+
 ## Arch
 
 ### Install Arch Linux

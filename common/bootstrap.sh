@@ -2,12 +2,15 @@
 
 GOPATH="${HOME}/go"
 GOBIN="${GOPATH}/bin"
+LOCAL_BIN="${HOME}/.local/bin"
+PATH="${PATH}:${GOPATH}:${LOCAL_BIN}"
+
 mkdir -p "${GOBIN}"
 
 install_packages() {
   echo "Installing packages..."
   OS_ID="$(sed -n 's/^ID=\(\w\)/\1/p' /etc/os-release)"
-  "$(git rev-parse --showtop-level)/${OS_ID}/packages.sh"
+  "$(git rev-parse --show-toplevel)/${OS_ID}/packages.sh"
 }
 
 ssh_generate_keys() {
@@ -76,6 +79,24 @@ install_gopackages() {
   go install github.com/segmentio/golines@latest
 }
 
+install_nerdfonts() {
+  mkdir -p "${HOME}/.fonts"
+
+  local latest_tag font_url
+  latest_tag="$(curl -fsL "https://api.github.com/repos/ryanoasis/nerd-fonts/tags" | jq -r '.[0].name')"
+  font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/${latest_tag}/SourceCodePro.tar.xz"
+
+  curl -fsL "${font_url}" | tar xvJC "${HOME}/.fonts"
+}
+
+install_terminal_ps1() {
+  curl -sS https://starship.rs/install.sh | sh
+}
+
+swapescape() {
+  gsettings set org.gnome.desktop.input-sources xkb-options "['caps:swapescape']"
+}
+
 install_packages
 ssh_generate_keys
 ssh_add_identity
@@ -86,3 +107,6 @@ install_nvim
 install_tmux_tpm
 install_chezmoi
 install_gopackages
+install_nerdfonts
+install_terminal_ps1
+swapescape
