@@ -72,11 +72,12 @@ install_chezmoi() {
 }
 
 install_gopackages() {
-  go install github.com/nametake/golangci-lint-langserver@06bb2d79c545dc3beabbe9327843897cbe8eb43a
-  go install github.com/mikefarah/yq/v4@v4.44.5
-  go install mvdan.cc/gofumpt@v0.7.0
-  go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
-  go install github.com/segmentio/golines@latest
+    go install github.com/nametake/golangci-lint-langserver@v0.10.0
+    go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.1.2
+
+    go install github.com/mikefarah/yq/v4@v4.45.1
+    go install mvdan.cc/gofumpt@v0.8.0
+    go install github.com/segmentio/golines@latest
 }
 
 install_nerdfonts() {
