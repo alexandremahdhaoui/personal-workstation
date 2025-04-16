@@ -1,3 +1,4 @@
+---
 pacman:
   - nerd-fonts
   - flatpak
@@ -26,13 +27,13 @@ pacman:
   - runc
   - podman
   - qemu-base
-  - dive # container image inspect
+  - dive  # container image inspect
   - dosfstools
   - ovmf
   - clang
   - lld
   - dracut
-  - nerdctl # installs containerd
+  - nerdctl  # installs containerd
   - buildkit
   - cni-plugins
   - socat
